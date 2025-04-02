@@ -955,6 +955,122 @@ export default function DashboardPage() {
           )}
         </div>
 
+        {/* Cari Kod ile Arama Formu ve Sonuçları */}
+        {showSearchResult && (
+          <div className={`transform transition-all duration-500 ease-in-out mb-8 ${
+            isSearchResultVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+          }`}>
+            <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-md rounded-lg p-6`}>
+              <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4`}>
+                Cari Kod ile Arama
+              </h3>
+
+              <form onSubmit={handleSearchSubmit} className="mb-6">
+                <div className="flex space-x-4">
+                  <div className="flex-grow">
+                    <input
+                      type="text"
+                      value={searchCariKod}
+                      onChange={(e) => setSearchCariKod(e.target.value)}
+                      placeholder="Cari Kodu Girin (örn: Y3641)"
+                      className={`block w-full px-4 py-2 rounded-md ${
+                        isDarkMode 
+                          ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                          : 'border-gray-300 placeholder-gray-500'
+                      } shadow-sm focus:ring-purple-500 focus:border-purple-500`}
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={isSearching}
+                    className={`px-4 py-2 rounded-md text-sm font-medium text-white
+                      ${isSearching ? 'bg-purple-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700'}
+                      transition-colors duration-200 flex items-center space-x-2`
+                    }
+                  >
+                    {isSearching ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>Aranıyor...</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <span>Ara</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+
+              {searchedCari && (
+                <div className={`${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'} rounded-lg p-4 transition-opacity duration-300 ${searchedCari ? 'opacity-100' : 'opacity-0'}`}>
+                  <h4 className={`text-md font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-3`}>
+                    Cari Bilgileri
+                  </h4>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <div>
+                        <span className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Cari Kod:</span>
+                        <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{searchedCari.CariTemelBilgi.CARI_KOD}</span>
+                      </div>
+                      <div>
+                        <span className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Cari İsim:</span>
+                        <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{searchedCari.CariTemelBilgi.CARI_ISIM}</span>
+                      </div>
+                      <div>
+                        <span className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Telefon:</span>
+                        <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{searchedCari.CariTemelBilgi.CARI_TEL || '-'}</span>
+                      </div>
+                      <div>
+                        <span className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Adres:</span>
+                        <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{searchedCari.CariTemelBilgi.CARI_ADRES}</span>
+                      </div>
+                      <div>
+                        <span className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>İl/İlçe:</span>
+                        <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{searchedCari.CariTemelBilgi.CARI_IL} / {searchedCari.CariTemelBilgi.CARI_ILCE}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div>
+                        <span className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Vergi Dairesi:</span>
+                        <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{searchedCari.CariTemelBilgi.VERGI_DAIRESI || '-'}</span>
+                      </div>
+                      <div>
+                        <span className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Vergi Numarası:</span>
+                        <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{searchedCari.CariTemelBilgi.VERGI_NUMARASI || '-'}</span>
+                      </div>
+                      <div>
+                        <span className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Cari Tip:</span>
+                        <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                          {searchedCari.CariTemelBilgi.CARI_TIP === 'A' ? 'Alıcı' : 
+                           searchedCari.CariTemelBilgi.CARI_TIP === 'S' ? 'Satıcı' : 
+                           searchedCari.CariTemelBilgi.CARI_TIP === 'B' ? 'Alıcı/Satıcı' : searchedCari.CariTemelBilgi.CARI_TIP}
+                        </span>
+                      </div>
+                      <div>
+                        <span className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>M Kodu:</span>
+                        <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{searchedCari.CariTemelBilgi.M_KOD || '-'}</span>
+                      </div>
+                      <div>
+                        <span className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Posta Kodu:</span>
+                        <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{searchedCari.CariTemelBilgi.POSTAKODU || '-'}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Stok İşlemleri Bölümü */}
         <div className="mb-12">
           <div className="flex justify-between items-center mb-8">

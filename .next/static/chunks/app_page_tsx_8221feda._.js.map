@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file://C%3A/Users/furkan.demirbozan/Desktop/netsisNextjs-main/app/page.tsx"],"sourcesContent":["'use client';\n\nimport { useEffect } from 'react';\nimport { useRouter } from 'next/navigation';\nimport Image from \"next/image\";\n\nexport default function Home() {\n  const router = useRouter();\n\n  useEffect(() => {\n    router.push('/login');\n  }, [router]);\n\n  return null; // Yönlendirme yapılırken boş sayfa göster\n}\n"],"names":[],"mappings":";;;AAEA;AACA;;AAHA;;;AAMe,SAAS;;IACtB,MAAM,SAAS,CAAA,GAAA,qIAAA,CAAA,YAAS,AAAD;IAEvB,CAAA,GAAA,6JAAA,CAAA,YAAS,AAAD;0BAAE;YACR,OAAO,IAAI,CAAC;QACd;yBAAG;QAAC;KAAO;IAEX,OAAO,MAAM,0CAA0C;AACzD;GARwB;;QACP,qIAAA,CAAA,YAAS;;;KADF","debugId":null}}]
+}

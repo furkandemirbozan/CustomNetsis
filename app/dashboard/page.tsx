@@ -1420,7 +1420,7 @@ export default function DashboardPage() {
                       type="text"
                       value={searchCariKod}
                       onChange={(e) => setSearchCariKod(e.target.value)}
-                      placeholder="Cari Kodu Girin (örn: Y3641)"
+                      placeholder="Cari Kodu Girin (örn: YU677)"
                       className={`block w-full px-4 py-2 rounded-md ${
                         isDarkMode 
                           ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
@@ -1848,6 +1848,7 @@ export default function DashboardPage() {
                       </label>
                       <input
                         type="text"
+                        placeholder="Cari Kodu Girin (örn: YU677)"
                         required
                         value={formData.CARI_KOD}
                         onChange={(e) => setFormData({...formData, CARI_KOD: e.target.value})}
@@ -2546,11 +2547,12 @@ export default function DashboardPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <div>
-                      <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <label  className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                         Masraf Kodu *
                       </label>
                       <input
                         type="text"
+                        placeholder="770-01-01-0047"
                         required
                         value={masrafForm.Kod}
                         onChange={(e) => handleMasrafInputChange(e)}
@@ -3051,7 +3053,82 @@ export default function DashboardPage() {
       </div>
       
       {/* Modern Footer - Now sticky at the bottom */}
-      <footer className={`border-t ${isDarkMode ? 'bg-gray-900 border-gray-800 text-gray-400' : 'bg-white border-gray-200 text-gray-600'}`}>
+      <footer className={`border-t ${isDarkMode ? 'bg-gray-900 border-gray-800 text-gray-400' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+      {/* Kurumsal Bölümü */}
+      <div className="space-y-4">
+        <h3 className={`text-base font-bold uppercase tracking-wider ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+          Kurumsal
+        </h3>
+        <ul className="space-y-3">
+          <li><a href="#" className="text-sm hover:text-blue-500 transition-colors duration-300">Hakkımızda</a></li>
+          <li><a href="#" className="text-sm hover:text-blue-500 transition-colors duration-300">İletişim</a></li>
+          <li><a href="#" className="text-sm hover:text-blue-500 transition-colors duration-300">Kariyer</a></li>
+          <li><a href="#" className="text-sm hover:text-blue-500 transition-colors duration-300">Blog</a></li>
+        </ul>
+      </div>
+      
+      {/* Hizmetlerimiz Bölümü */}
+      <div className="space-y-4">
+        <h3 className={`text-base font-bold uppercase tracking-wider ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+          Hizmetlerimiz
+        </h3>
+        <ul className="space-y-3">
+          <li><a href="#" className="text-sm hover:text-blue-500 transition-colors duration-300">Çözümlerimiz</a></li>
+          <li><a href="#" className="text-sm hover:text-blue-500 transition-colors duration-300">Teknolojiler</a></li>
+          <li><a href="#" className="text-sm hover:text-blue-500 transition-colors duration-300">Projelerimiz</a></li>
+        </ul>
+      </div>
+      
+      {/* Yasal Bölümü */}
+      <div className="space-y-4">
+        <h3 className={`text-base font-bold uppercase tracking-wider ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+          Yasal
+        </h3>
+        <ul className="space-y-3">
+          <li><a href="#" className="text-sm hover:text-blue-500 transition-colors duration-300">Gizlilik Politikası</a></li>
+          <li><a href="#" className="text-sm hover:text-blue-500 transition-colors duration-300">Kullanım Şartları</a></li>
+          <li><a href="#" className="text-sm hover:text-blue-500 transition-colors duration-300">KVKK</a></li>
+        </ul>
+      </div>
+      
+      {/* İletişim ve Sosyal Medya */}
+      <div className="space-y-4">
+        <h3 className={`text-base font-bold uppercase tracking-wider ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+          Bizi Takip Edin
+        </h3>
+        <div className="flex space-x-4">
+          <a href="https://www.aydin.com/" className={`text-gray-500 hover:text-blue-500 transition-colors duration-300 ${isDarkMode ? 'hover:text-blue-400' : 'hover:text-blue-600'}`}>
+            <span className="sr-only">Web Sitesi</span>
+            <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+            </svg>
+          </a>
+          <a href="https://www.linkedin.com/company/ayd%C4%B1n-destech" className={`text-gray-500 hover:text-blue-500 transition-colors duration-300 ${isDarkMode ? 'hover:text-blue-400' : 'hover:text-blue-600'}`}>
+            <span className="sr-only">LinkedIn</span>
+            <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 001.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 00-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
+            </svg>
+          </a>
+          <a href="https://www.linkedin.com/company/turgut-ayd-n-holding" className={`text-gray-500 hover:text-blue-500 transition-colors duration-300 ${isDarkMode ? 'hover:text-blue-400' : 'hover:text-blue-600'}`}>
+            <span className="sr-only">LinkedIn</span>
+            <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 001.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 00-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div className={`mt-12 pt-8 border-t ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
+      <p className="text-sm text-center">
+        © {new Date().getFullYear()} Aydın. Tüm hakları saklıdır.
+      </p>
+    </div>
+  </div>
+</footer>
+      {/* <footer className={`border-t ${isDarkMode ? 'bg-gray-900 border-gray-800 text-gray-400' : 'bg-white border-gray-200 text-gray-600'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="space-y-3">
@@ -3067,7 +3144,7 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-      </footer>
+      </footer> */}
     </div>
   );
 } 

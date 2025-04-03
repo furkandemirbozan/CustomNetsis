@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -166,9 +166,6 @@ interface MasrafKalem {
   TEV_HESAP_KODU?: string;
   Olcubr?: number;
   CEVRIM?: number;
-  EXEXPENSETYPE?: number;
-  CMISLENECEK?: string;
-  Rapor_Kodu2?: string;
 }
 
 interface MasrafForm {
@@ -255,7 +252,7 @@ export default function DashboardPage() {
   // Add new state variables for Masraf
   const [showMasrafKayit, setShowMasrafKayit] = useState(false);
   const [masrafForm, setMasrafForm] = useState<MasrafForm>({
-    Seri_No: "HR",
+    Seri_No: "",
     Dekont_No: 0,
     Tarih: new Date().toISOString().split('T')[0],
     Firma_Adi: "",
@@ -263,18 +260,11 @@ export default function DashboardPage() {
     Kod: "",
     Tutar: 0,
     Kdv_Oran: 18,
-    Proje_Kodu: "M0001",
+    Proje_Kodu: "",
     Fisno: ""
   });
   const [submittingMasraf, setSubmittingMasraf] = useState(false);
   const [masrafResponse, setMasrafResponse] = useState<any>(null);
-  const [masrafKalemler, setMasrafKalemler] = useState<MasrafKalem[]>([]);
-  const [loadingDekontNo, setLoadingDekontNo] = useState(false);
-
-  const [searchMasrafSeri, setSearchMasrafSeri] = useState("HR");
-  const [searchMasrafNo, setSearchMasrafNo] = useState("");
-  const [searchingMasraf, setSearchingMasraf] = useState(false);
-  const [masrafSearchResult, setMasrafSearchResult] = useState<any>(null);
 
   useEffect(() => {
     // Function to check token and redirect if needed
@@ -331,11 +321,11 @@ export default function DashboardPage() {
       if (data.access_token) {
         localStorage.setItem('token', data.access_token);
       } else {
-        throw new Error('Token alınamadı');
+        throw new Error('Token alÄ±namadÄ±');
       }
     } catch (err) {
-      console.error('Token yenileme hatası:', err);
-      setError('Token yenilenirken bir hata oluştu');
+      console.error('Token yenileme hatasÄ±:', err);
+      setError('Token yenilenirken bir hata oluÅŸtu');
     }
   };
 
@@ -399,7 +389,7 @@ export default function DashboardPage() {
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Cari kayıt edilemedi: ${response.status} ${response.statusText}`);
+        throw new Error(`Cari kayÄ±t edilemedi: ${response.status} ${response.statusText}`);
       }
 
       const result = await response.json();
@@ -423,11 +413,11 @@ export default function DashboardPage() {
         setShowCariForm(false);
         setIsFormVisible(false);
       } else {
-        throw new Error(`Cari kayıt işlemi başarısız: ${result.Message || 'Bilinmeyen hata'}`);
+        throw new Error(`Cari kayÄ±t iÅŸlemi baÅŸarÄ±sÄ±z: ${result.Message || 'Bilinmeyen hata'}`);
       }
     } catch (err: any) {
-      console.error('Cari kayıt hatası:', err);
-      setError(`Cari kayıt edilirken bir hata oluştu: ${err.message || 'Bilinmeyen hata'}`);
+      console.error('Cari kayÄ±t hatasÄ±:', err);
+      setError(`Cari kayÄ±t edilirken bir hata oluÅŸtu: ${err.message || 'Bilinmeyen hata'}`);
     } finally {
       setLoading(false);
     }
@@ -438,12 +428,12 @@ export default function DashboardPage() {
       setLoading(true);
       setIsCariLoading(true);
       setError(null);
-      console.log('Cari listesi yükleniyor...');
+      console.log('Cari listesi yÃ¼kleniyor...');
       
       const token = localStorage.getItem('token');
       if (!token) {
-          router.push('/login');
-          return false;
+        router.push('/login');
+        return false;
       }
       
       // Build query parameters for pagination
@@ -454,7 +444,7 @@ export default function DashboardPage() {
       if (params.last === true) queryParams.append('last', 'true');
       
       const apiUrl = `http://172.16.20.230:7171/api/v2/arps${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
-      console.log('API isteği URL:', apiUrl);
+      console.log('API isteÄŸi URL:', apiUrl);
       
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -466,27 +456,27 @@ export default function DashboardPage() {
       });
       
       if (!response.ok) {
-        throw new Error(`API hatası: HTTP ${response.status}`);
+        throw new Error(`API hatasÄ±: HTTP ${response.status}`);
       }
       
       let data;
       try {
         const text = await response.text();
-        console.log('API yanıt metni alındı, ilk 100 karakter:', text.substring(0, 100));
+        console.log('API yanÄ±t metni alÄ±ndÄ±, ilk 100 karakter:', text.substring(0, 100));
         
         if (!text) {
-          throw new Error('Boş yanıt');
+          throw new Error('BoÅŸ yanÄ±t');
         }
         data = JSON.parse(text);
       } catch (parseError) {
-        console.error('API yanıtı işlenemedi:', parseError);
-        throw new Error('API yanıtı işlenemedi');
+        console.error('API yanÄ±tÄ± iÅŸlenemedi:', parseError);
+        throw new Error('API yanÄ±tÄ± iÅŸlenemedi');
       }
       
-      console.log('API yanıtı başarıyla parse edildi');
+      console.log('API yanÄ±tÄ± baÅŸarÄ±yla parse edildi');
 
       if (data && data.IsSuccessful === true && Array.isArray(data.Data)) {
-        console.log('Cari verisi başarıyla alındı, kayıt sayısı:', data.Data.length);
+        console.log('Cari verisi baÅŸarÄ±yla alÄ±ndÄ±, kayÄ±t sayÄ±sÄ±:', data.Data.length);
         setCariList(data.Data);
         
         // Show the table
@@ -497,17 +487,17 @@ export default function DashboardPage() {
         
         return true;
       } else {
-        console.error('API yanıtı beklenen formatta değil:', data);
+        console.error('API yanÄ±tÄ± beklenen formatta deÄŸil:', data);
         if (data?.Message) {
-          setError(`API Hatası: ${data.Message}`);
+          setError(`API HatasÄ±: ${data.Message}`);
         } else {
-          setError('Cari listesi beklenen formatta değil');
+          setError('Cari listesi beklenen formatta deÄŸil');
         }
         return false;
       }
     } catch (err: any) {
-      console.error('Cari listesi yüklenirken hata:', err);
-      setError(`Cari listesi yüklenirken bir hata oluştu: ${err.message || 'Bilinmeyen hata'}`);
+      console.error('Cari listesi yÃ¼klenirken hata:', err);
+      setError(`Cari listesi yÃ¼klenirken bir hata oluÅŸtu: ${err.message || 'Bilinmeyen hata'}`);
       return false;
     } finally {
       setLoading(false);
@@ -547,7 +537,7 @@ export default function DashboardPage() {
   // Add a new function to fetch cari details by code
   const fetchCariByCode = async (cariKod: string) => {
     if (!cariKod.trim()) {
-      setError('Lütfen bir Cari Kodu girin');
+      setError('LÃ¼tfen bir Cari Kodu girin');
       return;
     }
 
@@ -561,7 +551,7 @@ export default function DashboardPage() {
         return;
       }
       
-      // API isteği için URL
+      // API isteÄŸi iÃ§in URL
       const encodedQuery = encodeURIComponent(`CARI_KOD='${cariKod}'`);
       const apiUrl = `http://172.16.20.230:7171/api/v2/arps?q=${encodedQuery}`;
       
@@ -575,7 +565,7 @@ export default function DashboardPage() {
       });
       
       if (!response.ok) {
-        throw new Error(`Cari bilgisi alınamadı: HTTP ${response.status}`);
+        throw new Error(`Cari bilgisi alÄ±namadÄ±: HTTP ${response.status}`);
       }
       
       const data = await response.json();
@@ -588,11 +578,11 @@ export default function DashboardPage() {
         }, 50);
       } else {
         setSearchedCari(null);
-        throw new Error('Bu Cari Kodu ile kayıt bulunamadı');
+        throw new Error('Bu Cari Kodu ile kayÄ±t bulunamadÄ±');
       }
     } catch (err: any) {
-      console.error('Cari arama hatası:', err);
-      setError(`Cari arama hatası: ${err.message || 'Bilinmeyen hata'}`);
+      console.error('Cari arama hatasÄ±:', err);
+      setError(`Cari arama hatasÄ±: ${err.message || 'Bilinmeyen hata'}`);
       setShowSearchResult(false);
       setIsSearchResultVisible(false);
       setSearchedCari(null);
@@ -627,7 +617,7 @@ export default function DashboardPage() {
   // Add a function to fetch statement header data
   const fetchStatementHeader = async (code: string) => {
     if (!code.trim()) {
-      setError('Lütfen bir masraf kodu girin');
+      setError('LÃ¼tfen bir masraf kodu girin');
       return;
     }
 
@@ -641,7 +631,7 @@ export default function DashboardPage() {
         return;
       }
       
-      // API isteği için URL
+      // API isteÄŸi iÃ§in URL
       const apiUrl = `http://172.16.20.230:7171/api/v2/StatementsHeader/${encodeURIComponent(code)}`;
       
       const response = await fetch(apiUrl, {
@@ -654,7 +644,7 @@ export default function DashboardPage() {
       });
       
       if (!response.ok) {
-        throw new Error(`Masraf bilgisi alınamadı: HTTP ${response.status}`);
+        throw new Error(`Masraf bilgisi alÄ±namadÄ±: HTTP ${response.status}`);
       }
       
       const data = await response.json();
@@ -667,11 +657,11 @@ export default function DashboardPage() {
         }, 50);
       } else {
         setStatementData(null);
-        throw new Error('Bu masraf kodu ile kayıt bulunamadı');
+        throw new Error('Bu masraf kodu ile kayÄ±t bulunamadÄ±');
       }
     } catch (err: any) {
-      console.error('Masraf bilgisi arama hatası:', err);
-      setError(`Masraf bilgisi arama hatası: ${err.message || 'Bilinmeyen hata'}`);
+      console.error('Masraf bilgisi arama hatasÄ±:', err);
+      setError(`Masraf bilgisi arama hatasÄ±: ${err.message || 'Bilinmeyen hata'}`);
       setStatementData(null);
     } finally {
       setIsStatementLoading(false);
@@ -707,10 +697,10 @@ export default function DashboardPage() {
       setIsTransactionsLoading(true);
       setError(null);
       
-      // Token kontrolü
+      // Token kontrolÃ¼
       const token = localStorage.getItem('token');
       if (!token) {
-        console.log('Token bulunamadı, login sayfasına yönlendiriliyor');
+        console.log('Token bulunamadÄ±, login sayfasÄ±na yÃ¶nlendiriliyor');
         router.push('/login');
         return;
       }
@@ -723,7 +713,7 @@ export default function DashboardPage() {
       if (params.last === true) queryParams.append('last', 'true');
 
       const apiUrl = `http://172.16.20.230:7171/api/v2/ItemTransactions${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
-      console.log('API isteği gönderiliyor:', apiUrl);
+      console.log('API isteÄŸi gÃ¶nderiliyor:', apiUrl);
 
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -735,37 +725,37 @@ export default function DashboardPage() {
       });
 
       if (!response.ok) {
-        throw new Error(`Stok hareketleri alınamadı: HTTP ${response.status}`);
+        throw new Error(`Stok hareketleri alÄ±namadÄ±: HTTP ${response.status}`);
       }
 
       const data = await response.json();
       console.log('API Response:', data);
 
-      // API yanıtını doğru şekilde işle
+      // API yanÄ±tÄ±nÄ± doÄŸru ÅŸekilde iÅŸle
       let transactions = [];
       if (data && data.Data) {
-        // Eğer data.Data bir dizi ise direkt kullan, değilse diziye çevir
+        // EÄŸer data.Data bir dizi ise direkt kullan, deÄŸilse diziye Ã§evir
         transactions = Array.isArray(data.Data) ? data.Data : [data.Data];
       } else if (Array.isArray(data)) {
-        // Eğer yanıt direkt bir dizi ise
+        // EÄŸer yanÄ±t direkt bir dizi ise
         transactions = data;
       } else if (data) {
-        // Eğer yanıt tek bir nesne ise
+        // EÄŸer yanÄ±t tek bir nesne ise
         transactions = [data];
       }
 
       // Veriyi state'e kaydet
       setItemTransactions(transactions);
       
-      // Görünürlüğü güncelle
+      // GÃ¶rÃ¼nÃ¼rlÃ¼ÄŸÃ¼ gÃ¼ncelle
       setShowTransactions(true);
       setTimeout(() => {
         setIsTransactionsVisible(true);
       }, 50);
 
     } catch (err: any) {
-      console.error('Stok hareketleri yüklenirken hata:', err);
-      setError(`Stok hareketleri yüklenirken bir hata oluştu: ${err.message || 'Bilinmeyen hata'}`);
+      console.error('Stok hareketleri yÃ¼klenirken hata:', err);
+      setError(`Stok hareketleri yÃ¼klenirken bir hata oluÅŸtu: ${err.message || 'Bilinmeyen hata'}`);
       setItemTransactions([]);
     } finally {
       setIsTransactionsLoading(false);
@@ -803,252 +793,29 @@ export default function DashboardPage() {
     }));
   };
   
-  const generateDekontNo = async () => {
-    setLoadingDekontNo(true);
-    try {
-      // API'den en son dekont numarasını alalım
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('Oturum bulunamadı. Lütfen tekrar giriş yapın.');
-      }
-      
-      // Son dekont numarasını almak için API'ye istek at
-      const response = await fetch('http://172.16.20.230:7171/api/v2/StatementsHeader?sort=Dekont_No%20desc&last=true', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Dekont no alınamadı: HTTP ${response.status}`);
-      }
-      
-      const data = await response.json();
-      
-      // API'den dönen son dekont numarasını kontrol edelim
-      let lastDekontNo = 0;
-      if (data && data.Data && data.Data.length > 0 && data.Data[0].Dekont_No) {
-        lastDekontNo = data.Data[0].Dekont_No;
-      } else {
-        // Eğer API'den veri gelmezse varsayılan bir değer kullanabiliriz
-        lastDekontNo = 2018012000;
-      }
-      
-      // Bir sonraki dekont numarası
-      const nextDekontNo = lastDekontNo + 1;
-      console.log("Son dekont no:", lastDekontNo);
-      console.log("Kullanılacak yeni dekont no:", nextDekontNo);
-      
-      // Dekont numarasını forma kaydedelim
-      setMasrafForm(prev => ({
-        ...prev,
-        Dekont_No: nextDekontNo
-      }));
-      
-      // Başarı mesajı
-      alert("Yeni dekont numarası başarıyla alındı: " + nextDekontNo);
-      return nextDekontNo;
-    } catch (error) {
-      console.error("Dekont no alma hatası:", error);
-      alert("Dekont numarası alınırken bir hata oluştu: " + (error instanceof Error ? error.message : "Bilinmeyen hata"));
-      
-      // Hata durumunda manuel olarak bir dekont numarası oluşturalım (yedek çözüm)
-      const randomPart = Math.floor(Math.random() * 10000);
-      const fallbackDekontNo = 2018012000 + randomPart;
-      
-      setMasrafForm(prev => ({
-        ...prev,
-        Dekont_No: fallbackDekontNo
-      }));
-      
-      return fallbackDekontNo;
-    } finally {
-      setLoadingDekontNo(false);
-    }
-  };
-
-  const addMasrafKalem = () => {
-    if (!masrafForm.Dekont_No) {
-      alert("Önce 'Dekont No Al' butonuna tıklayınız.");
-      return;
-    }
-    
-    if (!masrafForm.Kod || !masrafForm.Firma_Adi || !masrafForm.Aciklama || masrafForm.Tutar <= 0) {
-      alert("Lütfen tüm zorunlu alanları doldurunuz.");
-      return;
-    }
-    
-    const newKalem: MasrafKalem = {
-      DekontTip: 0,
-      TransactSupport: true,
-      MuhasebelesmisBelge: true,
-      Sube_Kodu: 0,
-      Seri_No: masrafForm.Seri_No,
-      Dekont_No: masrafForm.Dekont_No,
-      Tarih: masrafForm.Tarih,
-      ValorTrh: masrafForm.Tarih,
-      ValorGun: 0,
-      Sira_No: masrafKalemler.length + 1,
-      C_M: "M",
-      Kod: masrafForm.Kod,
-      Referans: masrafForm.Proje_Kodu,
-      Aciklama1: masrafForm.Firma_Adi + " - " + masrafForm.Aciklama,
-      B_A: "B",
-      Tutar: masrafForm.Tutar,
-      Kdv_Oran: masrafForm.Kdv_Oran,
-      Kdv_Dahil: "E",
-      Fisno: masrafForm.Fisno,
-      DovTL: "T",
-      DOVTIP: 0,
-      DOVTUT: 0,
-      Proje_Kodu: masrafForm.Proje_Kodu,
-      SubeGirilecek: "",
-      Entegrefkey: makeKey(masrafForm.Dekont_No, masrafKalemler.length + 1, "M", masrafForm.Kod),
-      OtoVadeGunuGetir: true,
-      KayitYapanKul: "",
-      KayitTarihi: new Date().toISOString().split('T')[0],
-      OnayTipi: "A",
-      OnayNum: 0
-    };
-    
-    setMasrafKalemler(prev => [...prev, newKalem]);
-    
-    // Form alanlarını kısmen resetle (dekont no ve seri no kalacak)
-    setMasrafForm(prev => ({
-      ...prev,
-      Firma_Adi: "",
-      Aciklama: "",
-      Kod: "",
-      Tutar: 0,
-      Fisno: ""
-    }));
-  };
-
-  // Bu yardımcı fonksiyon entegrefKey oluşturmak için kullanılacak
-  const makeKey = (dekont: number, sira: number, c_m: string, kod: string) => {
-    // Entegrefkey yapısı: "11$00000HR0000" + Dekont_No + SıraNo(4 basamak) + C_M değeri + kod
-    const staticPart = "11$00000HR0000";
-    const dekontPart = dekont.toString();
-    const siraPart = sira.toString().padStart(4, '0');
-    
-    return staticPart + dekontPart + siraPart + c_m + kod;
-  };
-
-  // Sadece masraf kalemlerinin (C_M = "M") tutarlarını topla, özet kalemleri (C_M = "C") dahil etme
-  const calculateTotalAmount = (items: MasrafKalem[]): number => {
-    return items
-      .filter(item => item.C_M !== "C")
-      .reduce((sum, item) => sum + (item.Tutar || 0), 0);
-  };
-  
   const handleMasrafSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmittingMasraf(true);
     setMasrafResponse(null);
     
     try {
-      // Dekont numarası yoksa veya sıfırsa yeni oluştur
-      let dekontNo = masrafForm.Dekont_No;
-      if (!dekontNo) {
-        dekontNo = await generateDekontNo();
-        if (!dekontNo) {
-          throw new Error("Geçerli bir dekont numarası alınamadı");
-        }
-      }
+      // Masraf kaydÄ± API isteÄŸi
+      const masrafKalem: MasrafKalem = {
+        Seri_No: masrafForm.Seri_No,
+        Dekont_No: masrafForm.Dekont_No,
+        Tarih: masrafForm.Tarih,
+        Aciklama1: masrafForm.Aciklama,
+        Kod: masrafForm.Kod,
+        Tutar: masrafForm.Tutar,
+        Kdv_Oran: masrafForm.Kdv_Oran,
+        Proje_Kodu: masrafForm.Proje_Kodu,
+        Fisno: masrafForm.Fisno
+      };
       
       const token = localStorage.getItem('token');
       if (!token) {
-        throw new Error('Oturum bulunamadı. Lütfen tekrar giriş yapın.');
+        throw new Error('Oturum bulunamadÄ±. LÃ¼tfen tekrar giriÅŸ yapÄ±n.');
       }
-      
-      // Masraf kalemini oluştur
-      const masrafKalem: MasrafKalem = {
-        DekontTip: 0,
-        TransactSupport: true,
-        MuhasebelesmisBelge: true,
-        Sube_Kodu: 0,
-        Seri_No: masrafForm.Seri_No,
-        Dekont_No: dekontNo,
-        Sira_No: 1,
-        Fisno: masrafForm.Fisno,
-        Tarih: masrafForm.Tarih,
-        ValorTrh: masrafForm.Tarih,
-        ValorGun: 0,
-        C_M: "M",
-        Kod: masrafForm.Kod, 
-        Referans: masrafForm.Proje_Kodu,
-        Aciklama1: masrafForm.Firma_Adi + " - " + masrafForm.Aciklama,
-        B_A: "B",
-        Tutar: masrafForm.Tutar,
-        Kdv_Oran: masrafForm.Kdv_Oran,
-        Kdv_Dahil: "E",
-        DovTL: "T",
-        DOVTIP: 0,
-        DOVTUT: 0,
-        Proje_Kodu: masrafForm.Proje_Kodu,
-        SubeGirilecek: "",
-        Entegrefkey: makeKey(dekontNo, 1, "M", masrafForm.Kod),
-        OtoVadeGunuGetir: true,
-        KayitYapanKul: "",
-        KayitTarihi: new Date().toISOString().split('T')[0],
-        OnayTipi: "A",
-        OnayNum: 0
-      };
-      
-      // Özet (Cari) satırı -> "C"
-      const cariKod = "Y0758"; // Sabit cari kodu
-      
-      const cariKalem: MasrafKalem = {
-        DekontTip: 0,
-        TransactSupport: true,
-        MuhasebelesmisBelge: true,
-        Sube_Kodu: 0,
-        Seri_No: masrafForm.Seri_No,
-        Dekont_No: dekontNo,
-        Sira_No: 2,
-        Fisno: "",
-        Tarih: masrafForm.Tarih,
-        ValorTrh: masrafForm.Tarih,
-        ValorGun: 0,
-        C_M: "C",
-        Kod: cariKod,
-        Referans: masrafForm.Proje_Kodu,
-        Aciklama1: "Masraf Kaydı - " + masrafForm.Aciklama,
-        B_A: "A",
-        Tutar: masrafForm.Tutar,
-        Kdv_Oran: 0,
-        Kdv_Dahil: "E",
-        DovTL: "T",
-        DOVTIP: 0,
-        DOVTUT: 0,
-        Proje_Kodu: masrafForm.Proje_Kodu,
-        SubeGirilecek: "",
-        Entegrefkey: makeKey(dekontNo, 2, "C", cariKod),
-        OtoVadeGunuGetir: true,
-        KayitYapanKul: "",
-        KayitTarihi: new Date().toISOString().split('T')[0],
-        OnayTipi: "A",
-        OnayNum: 0
-      };
-      
-      // Ana JSON body
-      const requestBody = {
-        Kalemler: [masrafKalem, cariKalem],
-        Use64BitService: true,
-        TransactSupport: true,
-        MuhasebelesmisBelge: true,
-        Sube_Kodu: 0,
-        Seri_No: masrafForm.Seri_No,
-        Dekont_No: dekontNo,
-        Muh: 1,
-        Degisti: 1,
-        KalemAdedi: 2
-      };
-      
-      console.log("API'ye gönderilecek veri:", JSON.stringify(requestBody, null, 2));
       
       const response = await fetch('http://172.16.20.230:7171/api/v2/StatementsHeader/', {
         method: 'POST',
@@ -1057,96 +824,41 @@ export default function DashboardPage() {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify(masrafKalem)
       });
       
       if (!response.ok) {
-        throw new Error(`Masraf kaydı başarısız: HTTP ${response.status}`);
+        throw new Error(`Masraf kaydÄ± baÅŸarÄ±sÄ±z: HTTP ${response.status}`);
       }
       
       const data = await response.json();
       
-      if (data && data.IsSuccessful === true) {
-        // İşlem başarılı
-        setMasrafResponse({
-          success: true,
-          data: data
-        });
-        
-        // Form alanlarını resetle
-        setMasrafForm({
-          Seri_No: "HR",
-          Dekont_No: dekontNo + 1, // Bir sonraki için hazırla
-          Tarih: new Date().toISOString().split('T')[0],
-          Firma_Adi: "",
-          Aciklama: "",
-          Kod: "",
-          Tutar: 0,
-          Kdv_Oran: 18,
-          Proje_Kodu: "M0001",
-          Fisno: ""
-        });
-        
-        alert("Masraf kaydı başarıyla oluşturuldu. Dekont no: " + dekontNo);
-      } else {
-        // Hata durumunda
-        let errorMessage = "Masraf kaydı oluşturulurken bir hata oluştu.";
-        if (data && data.ErrorDesc) {
-          errorMessage += " " + data.ErrorDesc;
-        }
-        throw new Error(errorMessage);
-      }
+      setMasrafResponse({
+        success: true,
+        data: data
+      });
+      
+      // Form alanlarÄ±nÄ± resetle
+      setMasrafForm({
+        Seri_No: "",
+        Dekont_No: 0,
+        Tarih: new Date().toISOString().split('T')[0],
+        Firma_Adi: "",
+        Aciklama: "",
+        Kod: "",
+        Tutar: 0,
+        Kdv_Oran: 18,
+        Proje_Kodu: "",
+        Fisno: ""
+      });
     } catch (error) {
-      console.error("Masraf kaydı hatası:", error);
+      console.error("Masraf kaydÄ± hatasÄ±:", error);
       setMasrafResponse({
         success: false,
-        error: error instanceof Error ? error.message : "Bir hata oluştu"
+        error: error instanceof Error ? error.message : "Bir hata oluÅŸtu"
       });
-      alert("Masraf kaydı hatası: " + (error instanceof Error ? error.message : "Bilinmeyen hata"));
     } finally {
       setSubmittingMasraf(false);
-    }
-  };
-
-  const handleMasrafSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchMasrafSeri || !searchMasrafNo) {
-      alert("Lütfen Seri No ve Dekont No giriniz.");
-      return;
-    }
-
-    setSearchingMasraf(true);
-    setMasrafSearchResult(null);
-
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('Oturum bulunamadı. Lütfen tekrar giriş yapın.');
-      }
-
-      const response = await fetch(`http://172.16.20.230:7171/api/v2/StatementsHeader/${searchMasrafSeri};${searchMasrafNo}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error(`Masraf bilgisi alınamadı: HTTP ${response.status}`);
-      }
-
-      const data = await response.json();
-      setMasrafSearchResult(data);
-    } catch (error) {
-      console.error("Masraf arama hatası:", error);
-      setMasrafSearchResult({
-        IsSuccessful: false,
-        ErrorDesc: error instanceof Error ? error.message : "Bir hata oluştu"
-      });
-    } finally {
-      setSearchingMasraf(false);
     }
   };
 
@@ -1155,7 +867,7 @@ export default function DashboardPage() {
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Yükleniyor...</p>
+          <p className="mt-4 text-gray-600">YÃ¼kleniyor...</p>
         </div>
       </div>
     );
@@ -1170,13 +882,13 @@ export default function DashboardPage() {
       />
       
       <div className="max-w-7xl mx-auto p-8 flex-grow">
-        {/* Cariler Bölümü */}
+        {/* Cariler BÃ¶lÃ¼mÃ¼ */}
         <div className="mb-12">
           <div className="flex justify-between items-center mb-8">
             <h1 className={`text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Cariler</h1>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {/* Cari Listesi Card */}
             <div 
               onClick={() => handleCardClick()}
@@ -1186,7 +898,7 @@ export default function DashboardPage() {
                 <div>
                   <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Cari Listesi</h2>
                   <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-500'} mt-1`}>
-                    {showTable ? 'Listeyi gizle' : 'Tüm carileri görüntüle'}
+                    {showTable ? 'Listeyi gizle' : 'TÃ¼m carileri gÃ¶rÃ¼ntÃ¼le'}
                   </p>
                 </div>
                 <div className={`text-indigo-600 transform transition-transform duration-300 ${showTable ? 'rotate-180' : ''}`}>
@@ -1197,7 +909,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Yeni Cari Kayıt Card */}
+            {/* Yeni Cari KayÄ±t Card */}
             <div 
               onClick={handleCariFormCard}
               className={`${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white'} rounded-lg shadow-md p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${showCariForm ? 'ring-2 ring-green-500' : ''}`}
@@ -1206,7 +918,7 @@ export default function DashboardPage() {
                 <div>
                   <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Yeni Cari</h2>
                   <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-500'} mt-1`}>
-                    {showCariForm ? 'Formu gizle' : 'Yeni cari kaydı oluştur'}
+                    {showCariForm ? 'Formu gizle' : 'Yeni cari kaydÄ± oluÅŸtur'}
                   </p>
                 </div>
                 <div className={`text-green-500 transform transition-transform duration-300 ${showCariForm ? 'rotate-180' : ''}`}>
@@ -1226,7 +938,7 @@ export default function DashboardPage() {
                 <div>
                   <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Cari Kod Arama</h2>
                   <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-500'} mt-1`}>
-                    {showSearchResult ? 'Aramayı gizle' : 'Cari kodu ile ara'}
+                    {showSearchResult ? 'AramayÄ± gizle' : 'Cari kodu ile ara'}
                   </p>
                 </div>
                 <div className={`text-purple-600 transform transition-transform duration-300 ${showSearchResult ? 'rotate-180' : ''}`}>
@@ -1234,10 +946,10 @@ export default function DashboardPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
-                </div>
               </div>
-            </div>
-
+            </div></div>\s*</div>
+          </div>
+          
           {/* Show the customer list with pagination */}
           {showTable && (
             <div className={`transform transition-all duration-500 ease-in-out ${isTableVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
@@ -1248,17 +960,17 @@ export default function DashboardPage() {
                       Cari Listesi
                     </h3>
                     <span className={`px-4 py-2 rounded-full text-sm ${isDarkMode ? 'bg-indigo-900 text-indigo-200' : 'bg-indigo-100 text-indigo-800'}`}>
-                      {cariList.length} Kayıt
+                      {cariList.length} KayÄ±t
                     </span>
                   </div>
 
-                  {/* Sayfalı Görüntüleme Controls */}
+                  {/* SayfalÄ± GÃ¶rÃ¼ntÃ¼leme Controls */}
                   <div className="mb-6">
                     <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
                       <div className="flex flex-wrap items-center gap-4">
                         <div className="flex-grow max-w-xs">
                           <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            Başlangıç Kaydı
+                            BaÅŸlangÄ±Ã§ KaydÄ±
                           </label>
                           <div className="flex items-center space-x-2">
                             <input
@@ -1288,13 +1000,13 @@ export default function DashboardPage() {
                                 isDarkMode ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-indigo-500 hover:bg-indigo-600'
                               } transition-colors duration-200`}
                             >
-                              Görüntüle
+                              GÃ¶rÃ¼ntÃ¼le
                             </button>
                           </div>
                           <p className={`text-xs mt-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                            Girilen kayıttan itibaren 10 kayıt gösterilir
-                  </p>
-                </div>
+                            Girilen kayÄ±ttan itibaren 10 kayÄ±t gÃ¶sterilir
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1313,16 +1025,16 @@ export default function DashboardPage() {
                                 Cari Kodu
                               </th>
                               <th scope="col" className={`px-6 py-3 text-left text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>
-                                Cari Adı
+                                Cari AdÄ±
                               </th>
                               <th scope="col" className={`px-6 py-3 text-left text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>
-                                İl / İlçe
+                                Ä°l / Ä°lÃ§e
                               </th>
                               <th scope="col" className={`px-6 py-3 text-left text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>
                                 Adres
                               </th>
                               <th scope="col" className={`px-6 py-3 text-left text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>
-                                İletişim
+                                Ä°letiÅŸim
                               </th>
                               <th scope="col" className={`px-6 py-3 text-left text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>
                                 Vergi Bilgileri
@@ -1369,8 +1081,8 @@ export default function DashboardPage() {
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-                  </svg>
-                          İlk Sayfa
+                          </svg>
+                          Ä°lk Sayfa
                         </button>
                         
                         <button
@@ -1386,24 +1098,24 @@ export default function DashboardPage() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
                           </svg>
                         </button>
-                </div>
+                      </div>
                     </>
                   ) : (
                     <div className={`text-center py-8 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                       <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                       </svg>
-                      <h3 className="mt-2 text-sm font-medium">Kayıt Bulunamadı</h3>
-                      <p className="mt-1 text-sm">Gösterilecek cari kaydı bulunmuyor.</p>
-              </div>
+                      <h3 className="mt-2 text-sm font-medium">KayÄ±t BulunamadÄ±</h3>
+                      <p className="mt-1 text-sm">GÃ¶sterilecek cari kaydÄ± bulunmuyor.</p>
+                    </div>
                   )}
-            </div>
-          </div>
+                </div>
+              </div>
             </div>
           )}
         </div>
 
-        {/* Cari Kod ile Arama Formu ve Sonuçları */}
+        {/* Cari Kod ile Arama Formu ve SonuÃ§larÄ± */}
         {showSearchResult && (
           <div className={`transform transition-all duration-500 ease-in-out mb-8 ${
             isSearchResultVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
@@ -1420,7 +1132,7 @@ export default function DashboardPage() {
                       type="text"
                       value={searchCariKod}
                       onChange={(e) => setSearchCariKod(e.target.value)}
-                      placeholder="Cari Kodu Girin (örn: Y3641)"
+                      placeholder="Cari Kodu Girin (Ã¶rn: Y3641)"
                       className={`block w-full px-4 py-2 rounded-md ${
                         isDarkMode 
                           ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
@@ -1442,7 +1154,7 @@ export default function DashboardPage() {
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        <span>Aranıyor...</span>
+                        <span>AranÄ±yor...</span>
                       </>
                     ) : (
                       <>
@@ -1469,7 +1181,7 @@ export default function DashboardPage() {
                         <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{searchedCari.CariTemelBilgi.CARI_KOD}</span>
                       </div>
                       <div>
-                        <span className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Cari İsim:</span>
+                        <span className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Cari Ä°sim:</span>
                         <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{searchedCari.CariTemelBilgi.CARI_ISIM}</span>
                       </div>
                       <div>
@@ -1481,7 +1193,7 @@ export default function DashboardPage() {
                         <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{searchedCari.CariTemelBilgi.CARI_ADRES}</span>
                       </div>
                       <div>
-                        <span className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>İl/İlçe:</span>
+                        <span className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Ä°l/Ä°lÃ§e:</span>
                         <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{searchedCari.CariTemelBilgi.CARI_IL} / {searchedCari.CariTemelBilgi.CARI_ILCE}</span>
                       </div>
                     </div>
@@ -1492,15 +1204,15 @@ export default function DashboardPage() {
                         <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{searchedCari.CariTemelBilgi.VERGI_DAIRESI || '-'}</span>
                       </div>
                       <div>
-                        <span className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Vergi Numarası:</span>
+                        <span className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Vergi NumarasÄ±:</span>
                         <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{searchedCari.CariTemelBilgi.VERGI_NUMARASI || '-'}</span>
                       </div>
                       <div>
                         <span className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Cari Tip:</span>
                         <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                          {searchedCari.CariTemelBilgi.CARI_TIP === 'A' ? 'Alıcı' : 
-                           searchedCari.CariTemelBilgi.CARI_TIP === 'S' ? 'Satıcı' : 
-                           searchedCari.CariTemelBilgi.CARI_TIP === 'B' ? 'Alıcı/Satıcı' : searchedCari.CariTemelBilgi.CARI_TIP}
+                          {searchedCari.CariTemelBilgi.CARI_TIP === 'A' ? 'AlÄ±cÄ±' : 
+                           searchedCari.CariTemelBilgi.CARI_TIP === 'S' ? 'SatÄ±cÄ±' : 
+                           searchedCari.CariTemelBilgi.CARI_TIP === 'B' ? 'AlÄ±cÄ±/SatÄ±cÄ±' : searchedCari.CariTemelBilgi.CARI_TIP}
                         </span>
                       </div>
                       <div>
@@ -1519,10 +1231,10 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Stok İşlemleri Bölümü */}
+        {/* Stok Ä°ÅŸlemleri BÃ¶lÃ¼mÃ¼ */}
         <div className="mb-12">
           <div className="flex justify-between items-center mb-8">
-            <h1 className={`text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Stok İşlemleri</h1>
+            <h1 className={`text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Stok Ä°ÅŸlemleri</h1>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1535,7 +1247,7 @@ export default function DashboardPage() {
                 <div>
                   <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Stok Hareketleri</h2>
                   <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-500'} mt-1`}>
-                    {showTransactions ? 'Listeyi gizle' : 'Tüm hareketleri görüntüle'}
+                    {showTransactions ? 'Listeyi gizle' : 'TÃ¼m hareketleri gÃ¶rÃ¼ntÃ¼le'}
                   </p>
                 </div>
                 <div className={`text-blue-600 transform transition-transform duration-300 ${showTransactions ? 'rotate-180' : ''}`}>
@@ -1567,17 +1279,17 @@ export default function DashboardPage() {
                     Stok Hareketleri
                   </h3>
                   <span className={`px-4 py-2 rounded-full text-sm ${isDarkMode ? 'bg-blue-900 text-blue-200' : 'bg-blue-100 text-blue-800'}`}>
-                    {itemTransactions.length} Kayıt
+                    {itemTransactions.length} KayÄ±t
                   </span>
                 </div>
 
-                {/* Sayfalı Görüntüleme Controls */}
+                {/* SayfalÄ± GÃ¶rÃ¼ntÃ¼leme Controls */}
                 <div className="mb-6">
                   <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
                     <div className="flex flex-wrap items-center gap-4">
                       <div className="flex-grow max-w-xs">
                         <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                          Başlangıç Kaydı
+                          BaÅŸlangÄ±Ã§ KaydÄ±
                         </label>
                         <div className="flex items-center space-x-2">
                           <input
@@ -1607,11 +1319,11 @@ export default function DashboardPage() {
                               isDarkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'
                             } transition-colors duration-200`}
                           >
-                            Görüntüle
+                            GÃ¶rÃ¼ntÃ¼le
                           </button>
                         </div>
                         <p className={`text-xs mt-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                          Girilen kayıttan itibaren 10 kayıt gösterilir
+                          Girilen kayÄ±ttan itibaren 10 kayÄ±t gÃ¶sterilir
                         </p>
                       </div>
 
@@ -1630,7 +1342,7 @@ export default function DashboardPage() {
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
                           </svg>
-                          İlk Sayfa
+                          Ä°lk Sayfa
                         </button>
                         
                         <button
@@ -1668,7 +1380,7 @@ export default function DashboardPage() {
                               Stok Kodu
                             </th>
                             <th scope="col" className={`px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                              Fiş No
+                              FiÅŸ No
                             </th>
                             <th scope="col" className={`px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                               Tarih
@@ -1683,7 +1395,7 @@ export default function DashboardPage() {
                               Depo Kodu
                             </th>
                             <th scope="col" className={`px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                              Açıklama
+                              AÃ§Ä±klama
                             </th>
                             <th scope="col" className={`px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                               Cari Kod
@@ -1798,7 +1510,7 @@ export default function DashboardPage() {
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
                         </svg>
-                        İlk Sayfa
+                        Ä°lk Sayfa
                       </button>
                       
                       <button
@@ -1821,8 +1533,8 @@ export default function DashboardPage() {
                     <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                     </svg>
-                    <h3 className="mt-2 text-sm font-medium">Kayıt Bulunamadı</h3>
-                    <p className="mt-1 text-sm">Gösterilecek stok hareketi bulunmuyor.</p>
+                    <h3 className="mt-2 text-sm font-medium">KayÄ±t BulunamadÄ±</h3>
+                    <p className="mt-1 text-sm">GÃ¶sterilecek stok hareketi bulunmuyor.</p>
                   </div>
                 )}
               </div>
@@ -1830,14 +1542,14 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Cari Kayıt Formu */}
+        {/* Cari KayÄ±t Formu */}
         {showCariForm && (
           <div className={`transform transition-all duration-500 ease-in-out mb-8 ${
             isFormVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
           }`}>
             <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-md rounded-lg p-6`}>
               <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4`}>
-                Yeni Cari Kayıt Formu
+                Yeni Cari KayÄ±t Formu
               </h3>
               <form onSubmit={handleFormSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1860,7 +1572,7 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                        Cari İsim *
+                        Cari Ä°sim *
                       </label>
                       <input
                         type="text"
@@ -1908,7 +1620,7 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                        İl *
+                        Ä°l *
                       </label>
                       <input
                         type="text"
@@ -1924,7 +1636,7 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                        İlçe *
+                        Ä°lÃ§e *
                       </label>
                       <input
                         type="text"
@@ -1952,9 +1664,9 @@ export default function DashboardPage() {
                             : 'border-gray-300'
                         } shadow-sm focus:border-indigo-500 focus:ring-indigo-500`}
                       >
-                        <option value="A">Alıcı</option>
-                        <option value="S">Satıcı</option>
-                        <option value="B">Alıcı/Satıcı</option>
+                        <option value="A">AlÄ±cÄ±</option>
+                        <option value="S">SatÄ±cÄ±</option>
+                        <option value="B">AlÄ±cÄ±/SatÄ±cÄ±</option>
                       </select>
                     </div>
                   </div>
@@ -1962,7 +1674,7 @@ export default function DashboardPage() {
                   <div className="space-y-4">
                     <div>
                       <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                        Dövizli Mi *
+                        DÃ¶vizli Mi *
                       </label>
                       <select
                         required
@@ -1974,7 +1686,7 @@ export default function DashboardPage() {
                             : 'border-gray-300'
                         } shadow-sm focus:border-indigo-500 focus:ring-indigo-500`}
                       >
-                        <option value="H">Hayır</option>
+                        <option value="H">HayÄ±r</option>
                         <option value="E">Evet</option>
                       </select>
                     </div>
@@ -2013,7 +1725,7 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                        Vergi Numarası *
+                        Vergi NumarasÄ± *
                       </label>
                       <input
                         type="text"
@@ -2063,15 +1775,15 @@ export default function DashboardPage() {
 
                 <div className={`mt-6 ${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'} p-4 rounded-md`}>
                   <h4 className={`text-sm font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-3`}>
-                    Sistem Değerleri (Salt Okunur)
+                    Sistem DeÄŸerleri (Salt Okunur)
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                     <div>
-                      <span className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>Şube Kodu:</span>
+                      <span className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>Åube Kodu:</span>
                       <span className={`ml-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>1</span>
                     </div>
                     <div>
-                      <span className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>İşletme Kodu:</span>
+                      <span className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>Ä°ÅŸletme Kodu:</span>
                       <span className={`ml-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>1</span>
                     </div>
                     <div>
@@ -2079,11 +1791,11 @@ export default function DashboardPage() {
                       <span className={`ml-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>0</span>
                     </div>
                     <div>
-                      <span className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>Vade Günü:</span>
+                      <span className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>Vade GÃ¼nÃ¼:</span>
                       <span className={`ml-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>0</span>
                     </div>
                     <div>
-                      <span className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>Ülke Kodu:</span>
+                      <span className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>Ãœlke Kodu:</span>
                       <span className={`ml-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>TR</span>
                     </div>
                   </div>
@@ -2102,7 +1814,7 @@ export default function DashboardPage() {
                         : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
                     } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`}
                   >
-                    İptal
+                    Ä°ptal
                   </button>
                   <button
                     type="submit"
@@ -2133,7 +1845,7 @@ export default function DashboardPage() {
                       type="text"
                       value={statementCode}
                       onChange={(e) => setStatementCode(e.target.value)}
-                      placeholder="Masraf Kodu Girin (örn: HR;5799)"
+                      placeholder="Masraf Kodu Girin (Ã¶rn: HR;5799)"
                       className={`block w-full px-4 py-2 rounded-md ${
                         isDarkMode 
                           ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
@@ -2155,7 +1867,7 @@ export default function DashboardPage() {
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        <span>Aranıyor...</span>
+                        <span>AranÄ±yor...</span>
                       </>
                     ) : (
                       <>
@@ -2210,7 +1922,7 @@ export default function DashboardPage() {
                             '-'}
                         </p>
                         <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'} mt-1`}>
-                          Kayıt: {Array.isArray(statementData.Details) && statementData.Details.length > 0 ? 
+                          KayÄ±t: {Array.isArray(statementData.Details) && statementData.Details.length > 0 ? 
                             (statementData.Details[0].KayitYapanKul || '-') : 
                             '-'}
                         </p>
@@ -2222,14 +1934,14 @@ export default function DashboardPage() {
                   {statementData.Details && Array.isArray(statementData.Details) && statementData.Details.length > 0 && (
                     <div>
                       <h5 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-3`}>
-                        Masraf Detayları
+                        Masraf DetaylarÄ±
                       </h5>
                       <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} overflow-x-auto rounded-md shadow`}>
                         <table className={`min-w-full divide-y ${isDarkMode ? 'divide-gray-700' : 'divide-gray-200'}`}>
                           <thead className={isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}>
                             <tr>
                               <th className={`px-4 py-3 text-left text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'} uppercase tracking-wider`}>
-                                Sıra No
+                                SÄ±ra No
                               </th>
                               <th className={`px-4 py-3 text-left text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'} uppercase tracking-wider`}>
                                 Tarih
@@ -2241,7 +1953,7 @@ export default function DashboardPage() {
                                 Kod
                               </th>
                               <th className={`px-4 py-3 text-left text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'} uppercase tracking-wider`}>
-                                Açıklama
+                                AÃ§Ä±klama
                               </th>
                               <th className={`px-4 py-3 text-left text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'} uppercase tracking-wider`}>
                                 B/A
@@ -2280,7 +1992,7 @@ export default function DashboardPage() {
                                     ? (isDarkMode ? 'text-red-400' : 'text-red-600')
                                     : (isDarkMode ? 'text-green-400' : 'text-green-600')
                                 }`}>
-                                  {detail.B_A === 'B' ? 'Borç' : detail.B_A === 'A' ? 'Alacak' : detail.B_A || '-'}
+                                  {detail.B_A === 'B' ? 'BorÃ§' : detail.B_A === 'A' ? 'Alacak' : detail.B_A || '-'}
                                 </td>
                                 <td className={`px-4 py-3 whitespace-nowrap text-sm text-right font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                                   {detail.Tutar ? detail.Tutar.toLocaleString('tr-TR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}
@@ -2321,7 +2033,7 @@ export default function DashboardPage() {
                   {/* Optionally, view raw data in a collapsible section */}
                   <div className="mt-6">
                     <details className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                      <summary className="cursor-pointer font-medium">Tüm Veri Alanları</summary>
+                      <summary className="cursor-pointer font-medium">TÃ¼m Veri AlanlarÄ±</summary>
                       <div className="mt-2 max-h-60 overflow-y-auto p-4 rounded-md text-xs font-mono whitespace-pre-wrap break-all bg-opacity-50 bg-black text-gray-300">
                         {JSON.stringify(statementData, null, 2)}
                       </div>
@@ -2333,214 +2045,42 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Masraflar Bölümü */}
+        {/* Masraflar BÃ¶lÃ¼mÃ¼ */}
         <div className="mb-12">
           <div className="flex justify-between items-center mb-8">
             <h1 className={`text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Masraflar</h1>
-      </div>
-      
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            {/* Masraf Kaydı Card */}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Masraf KayÄ±t Card */}
             <div 
               onClick={handleMasrafCardClick}
               className={`${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white'} rounded-lg shadow-md p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${showMasrafKayit ? 'ring-2 ring-amber-500' : ''}`}
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Masraf Kaydı</h2>
+                  <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Masraf KaydÄ±</h2>
                   <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-500'} mt-1`}>
-                    {showMasrafKayit ? 'Formu gizle' : 'Yeni masraf kaydı oluştur'}
+                    {showMasrafKayit ? 'Formu gizle' : 'Yeni masraf kaydÄ± oluÅŸtur'}
                   </p>
                 </div>
                 <div className={`text-amber-500 transform transition-transform duration-300 ${showMasrafKayit ? 'rotate-180' : ''}`}>
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
               </div>
-            </div>
-            
-            {/* Masraf Bilgisi Card */}
-            <div className={`${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white'} rounded-lg shadow-md p-6`}>
-              <div className="flex flex-col">
-                <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'} mb-4`}>Masraf Bilgisi</h2>
-                
-                <form onSubmit={handleMasrafSearch} className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
-                        Seri No
-                      </label>
-                      <input
-                        type="text"
-                        value={searchMasrafSeri}
-                        onChange={(e) => setSearchMasrafSeri(e.target.value)}
-                        className={`block w-full rounded-md ${
-                          isDarkMode 
-                            ? 'bg-gray-700 border-gray-600 text-white' 
-                            : 'border-gray-300'
-                        } shadow-sm focus:border-amber-500 focus:ring-amber-500`}
-                        placeholder="HR"
-                      />
-                    </div>
-                    <div>
-                      <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
-                        Dekont No
-                      </label>
-                      <input
-                        type="text"
-                        value={searchMasrafNo}
-                        onChange={(e) => setSearchMasrafNo(e.target.value)}
-                        className={`block w-full rounded-md ${
-                          isDarkMode 
-                            ? 'bg-gray-700 border-gray-600 text-white' 
-                            : 'border-gray-300'
-                        } shadow-sm focus:border-amber-500 focus:ring-amber-500`}
-                        placeholder="Örn: 2018021767"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-end">
-                    <button
-                      type="submit"
-                      disabled={searchingMasraf}
-                      className={`px-4 py-2 ${searchingMasraf ? 'bg-amber-400' : 'bg-amber-600 hover:bg-amber-700'} text-white rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 flex items-center justify-center`}
-                    >
-                      {searchingMasraf ? (
-                        <>
-                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                          Aranıyor...
-                        </>
-                      ) : (
-                        'Masraf Ara'
-                      )}
-                    </button>
-                  </div>
-                </form>
-                
-                {masrafSearchResult && (
-                  <div className="mt-4">
-                    {masrafSearchResult.IsSuccessful ? (
-                      <div className={`p-4 rounded-md ${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
-                        <h3 className={`text-md font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-2`}>
-                          Masraf Bilgileri
-                        </h3>
-                        <div className="space-y-2">
-                          <div className="flex justify-between">
-                            <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Dekont No:</span>
-                            <span className={`text-sm font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                              {masrafSearchResult.Data?.Dekont_No || 'N/A'}
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Seri No:</span>
-                            <span className={`text-sm font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                              {masrafSearchResult.Data?.Seri_No || 'N/A'}
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Tarih:</span>
-                            <span className={`text-sm font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                              {masrafSearchResult.Data?.Kalemler && masrafSearchResult.Data.Kalemler.length > 0 
-                                ? new Date(masrafSearchResult.Data.Kalemler[0].Tarih).toLocaleDateString('tr-TR') 
-                                : 'N/A'}
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Toplam Tutar:</span>
-                            <span className={`text-sm font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                              {masrafSearchResult.Data?.Kalemler 
-                                ? calculateTotalAmount(masrafSearchResult.Data.Kalemler).toFixed(2) + ' ₺'
-                                : 'N/A'}
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Kalem Sayısı:</span>
-                            <span className={`text-sm font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                              {masrafSearchResult.Data?.Kalemler 
-                                ? masrafSearchResult.Data.Kalemler.filter((kalem: MasrafKalem) => kalem.C_M !== 'C').length 
-                                : 0}
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Proje Kodu:</span>
-                            <span className={`text-sm font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                              {masrafSearchResult.Data?.Kalemler && masrafSearchResult.Data.Kalemler.length > 0 
-                                ? masrafSearchResult.Data.Kalemler[0].Proje_Kodu 
-                                : 'N/A'}
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Onay Durumu:</span>
-                            <span className={`text-sm font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                              {masrafSearchResult.Data?.Kalemler && masrafSearchResult.Data.Kalemler.length > 0 
-                                ? (masrafSearchResult.Data.Kalemler[0].OnayTipi === 'A' 
-                                   ? 'Onaylandı' 
-                                   : 'Beklemede')
-                                : 'N/A'}
-                            </span>
-                          </div>
-                        </div>
-                        
-                        {/* Masraf Kalemleri Tablosu */}
-                        {masrafSearchResult.Data?.Kalemler && masrafSearchResult.Data.Kalemler.length > 0 && (
-                          <div className="mt-4">
-                            <h4 className={`text-sm font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-2`}>
-                              Masraf Kalemleri
-                            </h4>
-                            <div className="overflow-x-auto">
-                              <table className={`min-w-full divide-y divide-gray-200 ${isDarkMode ? 'text-gray-200' : 'text-gray-500'}`}>
-                                <thead className={isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}>
-                                  <tr>
-                                    <th className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider">Sıra</th>
-                                    <th className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider">Tür</th>
-                                    <th className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider">Kod</th>
-                                    <th className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider">Açıklama</th>
-                                    <th className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider">Tutar</th>
-                                  </tr>
-                                </thead>
-                                <tbody className={`divide-y ${isDarkMode ? 'divide-gray-700' : 'divide-gray-200'}`}>
-                                  {masrafSearchResult.Data.Kalemler.map((kalem: MasrafKalem, index: number) => (
-                                    <tr key={index} className={kalem.C_M === 'C' ? (isDarkMode ? 'bg-gray-800 font-bold' : 'bg-gray-100 font-bold') : ''}>
-                                      <td className="px-3 py-2 whitespace-nowrap text-xs">{kalem.Sira_No}</td>
-                                      <td className="px-3 py-2 whitespace-nowrap text-xs">{kalem.C_M === 'C' ? 'Özet' : 'Masraf'}</td>
-                                      <td className="px-3 py-2 whitespace-nowrap text-xs">{kalem.Kod}</td>
-                                      <td className="px-3 py-2 whitespace-nowrap text-xs">{kalem.Aciklama1}</td>
-                                      <td className="px-3 py-2 whitespace-nowrap text-xs">
-                                        {kalem.Tutar?.toFixed(2)} ₺
-                                        {kalem.B_A === 'A' ? ' (Alacak)' : ' (Borç)'}
-                                      </td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="p-4 bg-red-50 text-red-800 rounded-md">
-                        <p className="text-sm font-medium">Hata: {masrafSearchResult.ErrorDesc || 'Masraf kaydı bulunamadı'}</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
+            </div></div>\s*</div>
           </div>
-            </div>
-            
+        </div>
+
         {showMasrafKayit && (
           <div className={`transform transition-all duration-500 ease-in-out mb-8 ${
             isFormVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
           }`}>
             <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-md rounded-lg p-6`}>
               <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4`}>
-                Yeni Masraf Kayıt Formu
+                Yeni Masraf KayÄ±t Formu
               </h3>
               <form onSubmit={handleMasrafSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -2561,12 +2101,12 @@ export default function DashboardPage() {
                             : 'border-gray-300'
                         } shadow-sm focus:border-indigo-500 focus:ring-indigo-500`}
                       />
-              </div>
+                    </div>
                     <div>
                       <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                        Masraf Adı *
+                        Masraf AdÄ± *
                       </label>
-                  <input
+                      <input
                         type="text"
                         required
                         value={masrafForm.Firma_Adi}
@@ -2581,7 +2121,7 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                        Masraf Açıklaması *
+                        Masraf AÃ§Ä±klamasÄ± *
                       </label>
                       <input
                         type="text"
@@ -2598,7 +2138,7 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                        Masraf Tutarı *
+                        Masraf TutarÄ± *
                       </label>
                       <input
                         type="number"
@@ -2615,7 +2155,7 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                        KDV Oranı (%) *
+                        KDV OranÄ± (%) *
                       </label>
                       <input
                         type="number"
@@ -2630,8 +2170,8 @@ export default function DashboardPage() {
                         } shadow-sm focus:border-indigo-500 focus:ring-indigo-500`}
                       />
                     </div>
-            </div>
-            
+                  </div>
+
                   <div className="space-y-4">
                     <div>
                       <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
@@ -2649,12 +2189,12 @@ export default function DashboardPage() {
                             : 'border-gray-300'
                         } shadow-sm focus:border-indigo-500 focus:ring-indigo-500`}
                       />
-              </div>
+                    </div>
                     <div>
                       <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                        Fiş No *
+                        FiÅŸ No *
                       </label>
-                  <input
+                      <input
                         type="text"
                         required
                         value={masrafForm.Fisno}
@@ -2705,42 +2245,18 @@ export default function DashboardPage() {
                       <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                         Dekont No *
                       </label>
-                      <div className="flex space-x-2">
-                        <input
-                          type="number"
-                          required
-                          value={masrafForm.Dekont_No}
-                          onChange={(e) => handleMasrafInputChange(e)}
-                          name="Dekont_No"
-                          className={`mt-1 block w-full rounded-md ${
-                            isDarkMode 
-                              ? 'bg-gray-700 border-gray-600 text-white' 
-                              : 'border-gray-300'
-                          } shadow-sm focus:border-indigo-500 focus:ring-indigo-500`}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            generateDekontNo().catch(err => {
-                              console.error("Dekont no alma hatası:", err);
-                            });
-                          }}
-                          disabled={loadingDekontNo}
-                          className={`mt-1 px-4 py-2 ${loadingDekontNo ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'} text-white rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 flex items-center justify-center`}
-                        >
-                          {loadingDekontNo ? (
-                            <>
-                              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                              </svg>
-                              Alınıyor...
-                            </>
-                          ) : (
-                            'Dekont No Al'
-                          )}
-                        </button>
-                      </div>
+                      <input
+                        type="number"
+                        required
+                        value={masrafForm.Dekont_No}
+                        onChange={(e) => handleMasrafInputChange(e)}
+                        name="Dekont_No"
+                        className={`mt-1 block w-full rounded-md ${
+                          isDarkMode 
+                            ? 'bg-gray-700 border-gray-600 text-white' 
+                            : 'border-gray-300'
+                        } shadow-sm focus:border-indigo-500 focus:ring-indigo-500`}
+                      />
                     </div>
                   </div>
                 </div>
@@ -2748,305 +2264,54 @@ export default function DashboardPage() {
                 <div className="flex justify-end space-x-4">
                   <button
                     type="button"
-                    onClick={addMasrafKalem}
-                    className="py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >
-                    Listeye Ekle
-                  </button>
-                  <button
-                    type="button"
                     onClick={() => {
                       setIsFormVisible(false);
                       setTimeout(() => setShowMasrafKayit(false), 500);
                     }}
-                    className="py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className={`px-4 py-2 text-sm font-medium ${
+                      isDarkMode
+                        ? 'text-gray-300 bg-gray-700 hover:bg-gray-600'
+                        : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
+                    } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`}
                   >
-                    İptal
+                    Ä°ptal
                   </button>
                   <button
                     type="submit"
                     disabled={submittingMasraf}
-                    className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
-                      submittingMasraf ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'
-                    } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+                    className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-indigo-400"
                   >
                     {submittingMasraf ? 'Kaydediliyor...' : 'Kaydet'}
                   </button>
                 </div>
-                </form>
+              </form>
               
-              {/* Masraf Kalemleri Listesi */}
-              {masrafKalemler.length > 0 && (
-                <div className="mt-8">
-                  <h4 className={`text-lg font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4`}>
-                    Eklenmiş Masraf Kalemleri
-                  </h4>
-                  <div className="overflow-x-auto">
-                    <table className={`min-w-full divide-y divide-gray-200 ${isDarkMode ? 'bg-gray-700 text-gray-200' : 'bg-white text-gray-500'}`}>
-                      <thead className={isDarkMode ? 'bg-gray-600' : 'bg-gray-50'}>
-                        <tr>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                            Sıra
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                            Masraf Kodu
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                            Açıklama
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                            Tarih
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                            Tutar
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                            KDV %
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                            İşlemler
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className={`divide-y ${isDarkMode ? 'divide-gray-600' : 'divide-gray-200'}`}>
-                        {masrafKalemler.map((kalem, index) => (
-                          <tr key={index} className={index % 2 === 0 ? (isDarkMode ? 'bg-gray-800' : 'bg-white') : (isDarkMode ? 'bg-gray-700' : 'bg-gray-50')}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                              {index + 1}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                              {kalem.Kod}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                              {kalem.Aciklama1}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                              {kalem.Tarih}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                              {kalem.Tutar?.toFixed(2)}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                              {kalem.Kdv_Oran}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setMasrafKalemler(prev => prev.filter((_, i) => i !== index));
-                                }}
-                                className="text-red-600 hover:text-red-900"
-                              >
-                                Sil
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                      <tfoot>
-                        <tr className={isDarkMode ? 'bg-gray-600' : 'bg-gray-100'}>
-                          <td colSpan={4} className="px-6 py-4 text-sm font-medium text-right">
-                            Toplam:
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            {masrafKalemler.reduce((sum, item) => sum + (item.Tutar || 0), 0).toFixed(2)}
-                          </td>
-                          <td colSpan={2}></td>
-                        </tr>
-                      </tfoot>
-                    </table>
-              </div>
-                  
-                  <div className="mt-4 flex justify-end">
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        if (masrafKalemler.length === 0) {
-                          alert("Kaydedilecek masraf kalemi bulunamadı.");
-                          return;
-                        }
-                        
-                        setSubmittingMasraf(true);
-                        try {
-                          const token = localStorage.getItem('token');
-                          if (!token) {
-                            throw new Error('Oturum bulunamadı. Lütfen tekrar giriş yapın.');
-                          }
-                          
-                          // Dekont numarası kontrol
-                          let dekontNo = 0;
-                          if (masrafKalemler[0].Dekont_No) {
-                            dekontNo = masrafKalemler[0].Dekont_No;
-                          } else {
-                            const newDekontNo = await generateDekontNo();
-                            dekontNo = newDekontNo;
-                          }
-                          
-                          if (!dekontNo) {
-                            throw new Error("Geçerli bir dekont numarası bulunamadı.");
-                          }
-                          
-                          // Tüm kalemlere dekont numarasını atama
-                          const updatedKalemler = masrafKalemler.map((kalem, index) => {
-                            return {
-                              ...kalem,
-                              Dekont_No: dekontNo,
-                              Sira_No: index + 1,
-                              Entegrefkey: makeKey(
-                                dekontNo,
-                                index + 1,
-                                kalem.C_M || "M",
-                                kalem.Kod || ""
-                              )
-                            };
-                          });
-                          
-                          // Özet (Cari) satırı -> "C"
-                          const cariKod = "Y0758"; // Sabit cari kodu
-                          // Sadece masraf kalemlerinin (C_M = "M") tutarlarını topla, özet kalemleri (C_M = "C") dahil etme
-                          const toplamTutar = updatedKalemler
-                            .filter(kalem => kalem.C_M !== "C")
-                            .reduce((sum, item) => sum + (item.Tutar || 0), 0);
-                          
-                          const cariKalem: MasrafKalem = {
-                            DekontTip: 0,
-                            TransactSupport: true,
-                            MuhasebelesmisBelge: true,
-                            Sube_Kodu: 0,
-                            Seri_No: updatedKalemler[0].Seri_No,
-                            Dekont_No: dekontNo,
-                            Sira_No: updatedKalemler.length + 1,
-                            Tarih: new Date().toISOString().split('T')[0],
-                            ValorTrh: new Date().toISOString().split('T')[0],
-                            ValorGun: 0,
-                            C_M: "C",
-                            Kod: cariKod,
-                            Referans: updatedKalemler[0].Proje_Kodu,
-                            Aciklama1: "Masraf Kaydı Toplamı",
-                            B_A: "A",
-                            Tutar: toplamTutar,
-                            Kdv_Oran: 0,
-                            Kdv_Dahil: "E",
-                            DovTL: "T",
-                            DOVTIP: 0,
-                            DOVTUT: 0,
-                            Proje_Kodu: updatedKalemler[0].Proje_Kodu,
-                            SubeGirilecek: "",
-                            Entegrefkey: makeKey(
-                              dekontNo, 
-                              updatedKalemler.length + 1, 
-                              "C", 
-                              cariKod
-                            ),
-                            OtoVadeGunuGetir: true,
-                            KayitYapanKul: "",
-                            KayitTarihi: new Date().toISOString().split('T')[0],
-                            OnayTipi: "A",
-                            OnayNum: 0
-                          };
-                          
-                          // Tüm kalemleri toplayıp cari kalemi ekle
-                          const tumKalemler = [...updatedKalemler, cariKalem];
-                          
-                          // Ana JSON body
-                          const requestBody = {
-                            Kalemler: tumKalemler,
-                            Use64BitService: true,
-                            TransactSupport: true,
-                            MuhasebelesmisBelge: true,
-                            Sube_Kodu: 0,
-                            Seri_No: updatedKalemler[0].Seri_No,
-                            Dekont_No: dekontNo,
-                            Muh: 1,
-                            Degisti: 1,
-                            KalemAdedi: tumKalemler.length
-                          };
-                          
-                          console.log("API'ye gönderilecek veri:", JSON.stringify(requestBody, null, 2));
-                          
-                          const response = await fetch('http://172.16.20.230:7171/api/v2/StatementsHeader/', {
-                            method: 'POST',
-                            headers: {
-                              'Authorization': `Bearer ${token}`,
-                              'Content-Type': 'application/json',
-                              'Accept': 'application/json'
-                            },
-                            body: JSON.stringify(requestBody)
-                          });
-                          
-                          if (!response.ok) {
-                            throw new Error(`Masraf kaydı başarısız: HTTP ${response.status}`);
-                          }
-                          
-                          const data = await response.json();
-                          
-                          if (data && data.IsSuccessful === true) {
-                            // İşlem başarılı
-                            setMasrafResponse({
-                              success: true,
-                              data: data
-                            });
-                            
-                            // Form alanlarını resetle ve kalem listesini temizle
-                            setMasrafForm({
-                              Seri_No: "HR",
-                              Dekont_No: dekontNo + 1, // Bir sonraki için hazırla
-                              Tarih: new Date().toISOString().split('T')[0],
-                              Firma_Adi: "",
-                              Aciklama: "",
-                              Kod: "",
-                              Tutar: 0,
-                              Kdv_Oran: 18,
-                              Proje_Kodu: "M0001",
-                              Fisno: ""
-                            });
-                            
-                            setMasrafKalemler([]);
-                            
-                            alert("Masraf kayıtları başarıyla oluşturuldu. Dekont no: " + dekontNo);
-                          } else {
-                            // Hata durumunda
-                            let errorMessage = "Masraf kaydı oluşturulurken bir hata oluştu.";
-                            if (data && data.ErrorDesc) {
-                              errorMessage += " " + data.ErrorDesc;
-                            }
-                            throw new Error(errorMessage);
-                          }
-                        } catch (error) {
-                          console.error("Toplu masraf kaydı hatası:", error);
-                          alert("Toplu masraf kaydı hatası: " + (error instanceof Error ? error.message : "Bilinmeyen hata"));
-                        } finally {
-                          setSubmittingMasraf(false);
-                        }
-                      }}
-                      className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
-                        submittingMasraf ? 'bg-green-400' : 'bg-green-600 hover:bg-green-700'
-                      } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500`}
-                    >
-                      {submittingMasraf ? (
-                        <>
-                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                          Kaydediliyor...
-                        </>
-                      ) : (
-                        'Tümünü Kaydet'
-                      )}
-                    </button>
-                  </div>
-            </div>
-              )}
-
-              {/* Masraf Kaydı Yanıtı */}
+              {/* Masraf iÅŸlemi sonuÃ§ mesajÄ± */}
               {masrafResponse && (
-                <div className={`mt-6 p-4 rounded-md ${masrafResponse.success ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
-                  <p className="font-medium">{masrafResponse.success ? 'Masraf kaydı başarılı!' : 'Hata: ' + masrafResponse.error}</p>
-              </div>
+                <div className={`mt-4 p-4 rounded-md ${
+                  masrafResponse.success 
+                    ? (isDarkMode ? 'bg-green-800 text-green-100' : 'bg-green-100 text-green-800')
+                    : (isDarkMode ? 'bg-red-800 text-red-100' : 'bg-red-100 text-red-800')
+                }`}>
+                  {masrafResponse.success ? (
+                    <div className="flex items-center">
+                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                      <p>Masraf kaydÄ± baÅŸarÄ±yla oluÅŸturuldu!</p>
+                    </div>
+                  ) : (
+                    <div className="flex items-center">
+                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                      </svg>
+                      <p>Hata: {masrafResponse.error}</p>
+                    </div>
+                  )}
+                </div>
               )}
-              </div>
             </div>
+          </div>
         )}
       </div>
       
@@ -3059,8 +2324,8 @@ export default function DashboardPage() {
                 Kurumsal
               </h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-sm hover:underline">Hakkımızda</a></li>
-                <li><a href="#" className="text-sm hover:underline">İletişim</a></li>
+                <li><a href="#" className="text-sm hover:underline">HakkÄ±mÄ±zda</a></li>
+                <li><a href="#" className="text-sm hover:underline">Ä°letiÅŸim</a></li>
                 <li><a href="#" className="text-sm hover:underline">Kariyer</a></li>
                 <li><a href="#" className="text-sm hover:underline">Blog</a></li>
               </ul>
@@ -3071,3 +2336,4 @@ export default function DashboardPage() {
     </div>
   );
 } 
+
